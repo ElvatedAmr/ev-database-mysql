@@ -1,0 +1,61 @@
+USE etvs_in_was_state; 
+CREATE VIEW amount_per_year AS 
+SELECT model_year,
+COUNT(DISTINCT DOL_Vehicle_ID) as "Vehicles_Per_Year" 
+FROM vehicles
+GROUP BY model_year
+ORDER BY model_year;
+
+CREATE VIEW amount_per_county AS 
+SELECT county,
+make,
+COUNT(DISTINCT address.DOL_Vehicle_ID) as "Vehicles_Per_County"
+FROM address 
+INNER JOIN vehicles ON address.DOL_Vehicle_ID=Vehicles.DOL_Vehicle_ID
+GROUP BY county, make
+ORDER BY COUNT(DISTINCT address.DOL_Vehicle_ID) DESC*/
+
+CREATE VIEW electric_range_of_BEV AS 
+SELECT electric_range,
+model_year,
+make,
+model,
+etv_type
+FROM electric_range 
+INNER JOIN vehicles ON electric_range.DOL_Vehicle_ID=vehicles.DOL_Vehicle_ID
+INNER JOIN etv_type ON electric_range.DOL_Vehicle_ID=etv_type.DOL_Vehicle_ID
+WHERE etv_type = 'Battery Electric Vehicle (BEV)'
+GROUP BY electric_range, model_year, make, model, etv_type
+ORDER BY electric_range DESC 
+
+CREATE VIEW electric_range_of_PHEV AS
+SELECT electric_range,
+model_year,
+make,
+model,
+etv_type
+FROM electric_range 
+INNER JOIN vehicles ON electric_range.DOL_Vehicle_ID=vehicles.DOL_Vehicle_ID
+INNER JOIN etv_type ON electric_range.DOL_Vehicle_ID=etv_type.DOL_Vehicle_ID
+WHERE etv_type = 'Plug-in Hybrid Electric Vehicle (PHEV)'
+GROUP BY electric_range, model_year, make, model, etv_type
+ORDER BY electric_range DESC
+
+CREATE VIEW amount_per_manufacturer AS 
+SELECT make,
+COUNT(vehicles.DOL_Vehicle_ID) as "amount_per_manufacturer"
+FROM vehicles 
+GROUP BY make
+ORDER BY COUNT(vehicles.DOL_Vehicle_ID) DESC
+
+
+
+/*CREATE VIEW amount_per_manufacturer_per_city AS 
+SELECT make,
+city,
+COUNT(vehicles.DOL_Vehicle_ID) as "amount_per_manufacturer_per_city"
+FROM vehicles 
+JOIN address ON vehicles.DOL_Vehicle_ID=address.DOL_Vehicle_ID
+GROUP BY make, city
+HAVING COUNT(vehicles.DOL_Vehicle_ID) > 1
+ORDER BY COUNT(vehicles.DOL_Vehicle_ID) DESC*/
